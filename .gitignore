@@ -12,6 +12,7 @@ resources
 **/bin/*
 **/obj/*
 **/**/obj/*
+**/Content/Resources_gameScreens/*
 **/Content/exports/*
 **/Content/obj/*
 **/Content/bin/*

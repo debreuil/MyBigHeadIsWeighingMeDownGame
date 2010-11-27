@@ -19,10 +19,28 @@ namespace HeadGame
             FontManager.Instance.AddFont("Arial Black", V2DGame.contentManager.Load<SpriteFont>(@"ArialBlack"));
         }
 
+        private static HudScreen hud;
+        public static HudScreen Hud
+        {
+            get
+            {
+                if (hud == null)
+                {
+                    SymbolImport si = new SymbolImport("gameScreens", "hudScreen");
+                    hud = new HudScreen(si);
+                    hud.Visible = false;
+                    stage.AddScreen(hud);
+                }
+                return hud;
+            }
+        }
+
 		public override bool HasCursor { get { return true; } }
         protected override void CreateScreens()
-		{
+        {
             //stage.AddScreen(new TitleScreen(new SymbolImport("gameScreens", "titleScreens"))); 
+            hud = new HudScreen(new SymbolImport("gameScreens", "hudScreen"));
+            stage.AddScreen(hud);
             stage.AddScreen(new Level0Screen(new SymbolImport("gameScreens", "level0Screen")));
             stage.AddScreen(new Level1Screen(new SymbolImport("gameScreens", "level1Screen")));
             stage.AddScreen(new Level2Screen(new SymbolImport("gameScreens", "level2Screen")));
@@ -40,10 +58,8 @@ namespace HeadGame
                 keyDown = true;
                 stage.NextScreen();
             }
-            else if (keyDown && ks.IsKeyUp(Keys.Y))
-            {
-                keyDown = false;
-            }
+
+            keyDown = !ks.IsKeyUp(Keys.Y);
 #endif
 		}
         protected override void Draw(Microsoft.Xna.Framework.GameTime gameTime)

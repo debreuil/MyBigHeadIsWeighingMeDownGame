@@ -34,8 +34,9 @@ namespace HeadGame.Screens
         {
             base.Activate();
             ClearBoundsBody(EdgeName.Top);
-            overlayPanel.scoreMeter[0].SetMaxPoints(10);
-            overlayPanel.scoreMeter[1].SetMaxPoints(10);
+            Game1.Hud.SetBackground(0);
+            Game1.Hud.scoreMeter[0].SetMaxPoints(10);
+            Game1.Hud.scoreMeter[1].SetMaxPoints(10);
         }
 
         protected override void UpdatePlayer(int playerIndex, GameTime gameTime)
@@ -45,7 +46,7 @@ namespace HeadGame.Screens
                 headPlayer[playerIndex].AddPoints(gameTime.ElapsedGameTime.Milliseconds);
 
                 int pts = headPlayer[playerIndex].points;
-                overlayPanel.scoreMeter[playerIndex].SetScoreByRatio((float)(pts / (float)maxScore));
+                Game1.Hud.scoreMeter[playerIndex].SetScoreByRatio((float)(pts / (float)maxScore));
             }
         }
 

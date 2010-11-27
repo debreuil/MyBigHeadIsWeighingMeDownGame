@@ -124,7 +124,7 @@
     <Compile Include="Panels\ExitPanel.cs" />
     <Compile Include="Panels\InstructionsPanel.cs" />
     <Compile Include="Panels\MainMenuPanel.cs" />
-    <Compile Include="Panels\OverlayPanel.cs" />
+    <Compile Include="Screens\HudScreen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Screens\BaseScreen.cs" />

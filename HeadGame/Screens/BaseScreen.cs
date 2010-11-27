@@ -23,7 +23,7 @@ namespace HeadGame.Screens
         public const string TARGET = "target";
         //public static Dictionary<Type, ContactDelegate> contactTypes = new Dictionary<Type, ContactDelegate>();
 
-        public OverlayPanel overlayPanel;
+        public HudScreen hudScreen;
 
         //[V2DShaderAttribute(shaderType = typeof(BackgroundShader))]
 
@@ -35,9 +35,6 @@ namespace HeadGame.Screens
 
         [V2DSpriteAttribute(friction = 0.5f, restitution = 0.5F, isStatic = true)]
         public V2DSprite target;
-
-        [V2DSpriteAttribute(depthGroup = -1)]
-        public V2DSprite bkg;
 
         public Sprite targetAnim;
 
