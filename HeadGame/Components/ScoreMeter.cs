@@ -25,6 +25,11 @@ namespace HeadGame.Components
             base.Initialize();
         }
 
+        public void Reset()
+        {
+            SetMaxPoints(maxPoints);
+            SetScoreByRatio(0);
+        }
         public void SetMaxPoints(int maxPoints)
         {
             this.maxPoints = maxPoints;

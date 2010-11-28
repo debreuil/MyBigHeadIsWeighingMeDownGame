@@ -30,12 +30,11 @@ namespace HeadGame.Screens
         public override void Initialize()
         {
             base.Initialize();
-            Game1.Hud.SetBackground(1);
+            bkgScreenIndex = 1;
         }
         public override void Activate()
         {
             base.Activate();
-            ClearBoundsBody(EdgeName.Top);
             ClearBoundsBody(EdgeName.Bottom);
             ClearBoundsBody(EdgeName.Left);
             ClearBoundsBody(EdgeName.Right);

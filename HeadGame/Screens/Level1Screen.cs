@@ -28,14 +28,13 @@ namespace HeadGame.Screens
         public override void Initialize()
         {
             base.Initialize();
-            Game1.Hud.SetBackground(1);
+            bkgScreenIndex = 1;
             maxScore = 1000;
         }
 
         public override void Activate()
         {
             base.Activate();
-            ClearBoundsBody(EdgeName.Top);
         }
 
         protected override void UpdatePlayer(int playerIndex, GameTime gameTime)

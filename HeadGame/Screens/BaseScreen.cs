@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Audio;
 using DDW.Input;
 using HeadGame.Components;
 using HeadGame.Panels;
+using V2DRuntime.Enums;
 
 namespace HeadGame.Screens
 {
@@ -39,10 +40,11 @@ namespace HeadGame.Screens
         public Sprite targetAnim;
 
         protected int maxScore = 3;
+        protected int maxPoints = 10;
+        protected uint bkgScreenIndex = 0;
         public float moveForce = 250;
         public float jumpForce = 15000;
 
-        public bool restartLevel = false;
         public bool skipLevel = false;
         public bool exitToMainMenu = false;
         protected bool levelOver = false;
@@ -68,10 +70,13 @@ namespace HeadGame.Screens
         {
             base.Activate();
 
-            restartLevel = false;
             levelOver = false;
             skipLevel = false;
             exitToMainMenu = false;
+
+            ClearBoundsBody(EdgeName.Top);
+
+            ResetLevel();
         }
 
         public override void EndContact(Contact contact)
@@ -92,7 +97,9 @@ namespace HeadGame.Screens
         }
         protected void ResetLevel()
         {
-            restartLevel = true;
+            Game1.Hud.scoreMeter[0].Reset();
+            Game1.Hud.scoreMeter[1].Reset();
+            Game1.Hud.SetBackground(bkgScreenIndex);
         }
         protected void SkipLevel()
         {
@@ -111,11 +118,6 @@ namespace HeadGame.Screens
             {
                 skipLevel = false;
                 stage.NextScreen();
-            }
-            else if (restartLevel)
-            {
-                restartLevel = false;
-                stage.SetScreen(this.instanceName);
             }
             else if (exitToMainMenu)
             {
