@@ -14,7 +14,8 @@ namespace HeadGame.Components
         public Sprite bkg;
         public List<Sprite> levelScore;
 
-        public int maxPoints = 10;
+        private int maxPoints = 10;
+        private int pointOffset = 0;
 
         public ScoreMeter(Texture2D texture, V2DInstance instance) : base(texture, instance)
 		{
@@ -27,21 +28,26 @@ namespace HeadGame.Components
 
         public void Reset()
         {
-            SetMaxPoints(maxPoints);
             SetScoreByRatio(0);
         }
         public void SetMaxPoints(int maxPoints)
         {
             this.maxPoints = maxPoints;
-            for (int i = 0; i < levelScore.Count; i++)
+            if (maxPoints == 3)
             {
-                levelScore[i].Visible = (i < maxPoints) ? true : false;
+                GotoAndStop(1);
+                pointOffset = 10;
+            }
+            else
+            {
+                GotoAndStop(0);
+                pointOffset = 0;
             }
         }
         public void SetScoreByRatio(float ratio)
         {
-            int val = (int)(ratio * maxPoints);
-            for (int i = 0; i < levelScore.Count; i++)
+            int val = (int)(ratio * maxPoints) + pointOffset;
+            for (int i = pointOffset; i < levelScore.Count; i++)
             {
                 levelScore[i].GotoAndStop(i < val ? 1u : 0u);
             }

@@ -15,7 +15,16 @@ namespace HeadGame.Components
         private float airTime;
 
         public bool isJumpKeyDown;
-        public bool isOnTarget;
+        public int targetContactIndex = -1;
+
+        public PlayerFeet(Texture2D texture, V2DInstance instance) : base(texture, instance)
+		{
+        }
+        public override void AddedToStage(EventArgs e)
+        {
+            base.AddedToStage(e);
+            targetContactIndex = -1;
+        }
 
         public bool CanJump
         {
@@ -25,20 +34,15 @@ namespace HeadGame.Components
             }  
         }
 
-        public PlayerFeet(Texture2D texture, V2DInstance instance) : base(texture, instance)
-		{
-
-        }
-
         public void BeginContact(V2DSprite objB)
         {
             if (objB.Parent != this.Parent)
             {
                 contactCount++;
                 airTime = 0;
-                if(objB.InstanceName == BaseScreen.TARGET)
+                if(objB is Target)
                 {
-                    isOnTarget = true;
+                    targetContactIndex = objB.Index;
                 }
             }
         }
@@ -48,9 +52,9 @@ namespace HeadGame.Components
             if (objB.Parent != this.Parent)
             {
                 contactCount--;
-                if (objB.InstanceName == BaseScreen.TARGET)
+                if (objB is Target)
                 {
-                    isOnTarget = false;
+                    targetContactIndex = -1;
                 }
             }
         }

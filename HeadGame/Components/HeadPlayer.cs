@@ -21,10 +21,10 @@ namespace HeadGame.Components
         public V2DSprite neck;
         public V2DSprite playerBody;
 
-        [V2DSpriteAttribute(restitution = .1f, friction = .1f, fixedRotation = true)]
+        [V2DSpriteAttribute(restitution = .8f, friction = .1f, fixedRotation = true)]
         public PlayerFeet feet;
 
-        public int points = 0;
+        protected int points = 0;
 
         public HeadPlayer(Texture2D texture, V2DInstance instance) : base(texture, instance)
 		{
@@ -33,30 +33,45 @@ namespace HeadGame.Components
         {
             base.Initialize();
         }
-        public bool IsOnTarget
+        public int TargetContactIndex
         {
             get
             {
-                return this.feet.isOnTarget;
+                return this.feet.targetContactIndex;
+            }
+        }
+        
+        public int Points
+        {
+            get
+            {
+                return points;
+            }
+            set
+            {
+                points = value;
             }
         }
 
-        public void AddPoints(int amount)
+        public void MoveTo(float xPos, float yPos)
         {
-            points += amount;
-        }
-        public void MoveUp(int amount)
-        {
-            //Vector2 org = this.Position;
-            //this.Position = new Vector2(org.X, org.Y - amount);
+            xPos /= V2DScreen.WorldScale;
+            yPos /= V2DScreen.WorldScale;
+
+            head.body.SetLinearVelocity(Vector2.Zero);
+            neck.body.SetLinearVelocity(Vector2.Zero);
+            playerBody.body.SetLinearVelocity(Vector2.Zero);
+            feet.body.SetLinearVelocity(Vector2.Zero);
 
             Vector2 orgHead = head.body.Position;
             Vector2 orgNeck = neck.body.Position;
-            Vector2 orgBody = feet.body.Position;
-            Console.WriteLine(orgHead);
-            head.body.Position = new Vector2(orgHead.X, orgHead.Y - amount);
-            neck.body.Position = new Vector2(orgNeck.X, orgNeck.Y - amount);
-            feet.body.Position = new Vector2(orgBody.X, orgBody.Y - amount);
+            Vector2 orgBody = playerBody.body.Position;
+            Vector2 orgFeet = feet.body.Position;
+
+            head.body.Position = new Vector2(xPos, yPos);
+            neck.body.Position = new Vector2(xPos + (orgNeck.X - orgHead.X), yPos + (orgNeck.Y - orgHead.Y));
+            playerBody.body.Position = new Vector2(xPos + (orgBody.X - orgHead.X), yPos + (orgBody.Y - orgHead.Y));
+            feet.body.Position = new Vector2(xPos + (orgFeet.X - orgHead.X), yPos + (orgFeet.Y - orgHead.Y));
         }
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {

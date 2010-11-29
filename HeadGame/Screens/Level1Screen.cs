@@ -29,7 +29,9 @@ namespace HeadGame.Screens
         {
             base.Initialize();
             bkgScreenIndex = 1;
-            maxScore = 1000;
+            maxScore = 1000; 
+            maxPoints = 10;
+
         }
 
         public override void Activate()
@@ -39,11 +41,11 @@ namespace HeadGame.Screens
 
         protected override void UpdatePlayer(int playerIndex, GameTime gameTime)
         {
-            if (headPlayer[playerIndex].IsOnTarget)
+            if (headPlayer[playerIndex].TargetContactIndex != -1)
             {
-                headPlayer[playerIndex].AddPoints(gameTime.ElapsedGameTime.Milliseconds);
+                headPlayer[playerIndex].Points += gameTime.ElapsedGameTime.Milliseconds;
 
-                int pts = headPlayer[playerIndex].points;
+                int pts = headPlayer[playerIndex].Points;
                 Game1.Hud.scoreMeter[playerIndex].SetScoreByRatio((float)(pts / (float)maxScore));
             }
         }

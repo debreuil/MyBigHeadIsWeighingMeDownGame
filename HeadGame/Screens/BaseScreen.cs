@@ -35,7 +35,7 @@ namespace HeadGame.Screens
         public V2DSprite[] floor;
 
         [V2DSpriteAttribute(friction = 0.5f, restitution = 0.5F, isStatic = true)]
-        public V2DSprite target;
+        public Target[] target;
 
         public Sprite targetAnim;
 
@@ -43,11 +43,16 @@ namespace HeadGame.Screens
         protected int maxPoints = 10;
         protected uint bkgScreenIndex = 0;
         public float moveForce = 250;
-        public float jumpForce = 15000;
+        public float jumpForce = 10000;
 
         public bool skipLevel = false;
         public bool exitToMainMenu = false;
         protected bool levelOver = false;
+        protected bool playersNeedReset = false;
+        protected bool roundOver = true;
+        protected bool allowInput = true;
+
+        protected Random rnd = new Random((int)DateTime.Now.Ticks);
 
         public BaseScreen(V2DContent v2dContent): base(v2dContent)
         {
@@ -97,6 +102,8 @@ namespace HeadGame.Screens
         }
         protected void ResetLevel()
         {
+            Game1.Hud.scoreMeter[0].SetMaxPoints(maxPoints);
+            Game1.Hud.scoreMeter[1].SetMaxPoints(maxPoints);
             Game1.Hud.scoreMeter[0].Reset();
             Game1.Hud.scoreMeter[1].Reset();
             Game1.Hud.SetBackground(bkgScreenIndex);
@@ -114,6 +121,14 @@ namespace HeadGame.Screens
         {
             base.OnUpdateComplete(gameTime);
 
+            if (playersNeedReset)
+            {
+                playersNeedReset = false;
+                ResetPlayers();
+            }
+
+            roundOver = false;
+
             if (skipLevel)
             {
                 skipLevel = false;
@@ -126,7 +141,7 @@ namespace HeadGame.Screens
             }
             else if (levelOver)
             {
-//                gameOverlay.EndRound();
+                //                gameOverlay.EndRound();
             }
         }
         protected virtual void OnPlayerContact(object player, object objB, Fixture fixtureA, Fixture fixtureB)
@@ -137,39 +152,41 @@ namespace HeadGame.Screens
             }
         }
 
-        public override void Update(GameTime gameTime)
+        protected virtual void AddPoint(int playerIndex)
         {
-            HandlePlayerInput(0, Keys.J, Keys.L, Keys.I, Keys.K);
-            HandlePlayerInput(1, Keys.Left, Keys.Right, Keys.Up, Keys.Down);
-            base.Update(gameTime);
-
-            UpdatePlayer(0, gameTime);
-            UpdatePlayer(1, gameTime);
-            CheckTargets();
-            CheckForWin();
+            roundOver = true;
+            playersNeedReset = true;
+            headPlayer[playerIndex].Points += 1;
+            Game1.Hud.scoreMeter[playerIndex].SetScoreByRatio(headPlayer[playerIndex].Points / (float)maxScore);
         }
 
         private void CheckTargets()
         {
             if (target != null)
             {
-                var onTarget = headPlayer[0].IsOnTarget || headPlayer[1].IsOnTarget;
-                if (onTarget)
+                uint targOwner = 0;
+                int targIndex = headPlayer[0].TargetContactIndex;
+                if (targIndex == -1)
                 {
-                    target.GotoAndStop(1);
+                    targOwner = 1;
+                    targIndex = headPlayer[1].TargetContactIndex;
                 }
-                else
+
+                for (int i = 0; i < target.Length; i++)
                 {
-                    target.GotoAndStop(0);
+                    target[i].GotoAndStop(targIndex == i ? 1u + targOwner : 0u);
                 }
             }
         }
 
         protected virtual void CheckForWin()
         {
-            if (headPlayer[0].points >= maxScore || headPlayer[1].points >= maxScore)
+            int winnerIndex = (headPlayer[0].Points >= maxScore) ? 0 : (headPlayer[1].Points >= maxScore) ? 1 : -1;
+            if (winnerIndex >= 0)
             {
-                stage.NextScreen();
+                Game1.Hud.endPanel.GotoAndStop((uint)winnerIndex);
+                Game1.Hud.endPanel.Visible = true;
+                stage.RemoveScreen(this);
             }
         }
 
@@ -177,46 +194,68 @@ namespace HeadGame.Screens
         {
         }
 
+        protected virtual void ResetPlayers()
+        {
+            headPlayer[0].MoveTo(300, 150);
+            headPlayer[1].MoveTo(750, 150);
+        }
+
         private void HandlePlayerInput(int playerIndex, Keys left, Keys right, Keys jump, Keys kick)
         {
-            KeyboardState ks = Keyboard.GetState();
-            PlayerFeet pb = headPlayer[playerIndex].feet;
-            Body b = headPlayer[playerIndex].playerBody.body;
+            if (allowInput)
+            {
+                KeyboardState ks = Keyboard.GetState();
+                PlayerFeet pb = headPlayer[playerIndex].feet;
+                Body b = headPlayer[playerIndex].playerBody.body;
 
-            if (ks.IsKeyDown(left))
-            {
-                b.ApplyLinearImpulse(new Vector2(-moveForce, 0), b.GetWorldCenter());
-            }
-            else if (ks.IsKeyDown(right))
-            {
-                b.ApplyLinearImpulse(new Vector2(moveForce, 0), b.GetWorldCenter());
-            }
-
-            if (ks.IsKeyDown(kick))
-            {
-                headPlayer[playerIndex].playerBody.GotoAndStop(1);
-                if (pb.CanJump)
+                if (ks.IsKeyDown(left))
                 {
-                    b.ApplyLinearImpulse(new Vector2(0, -jumpForce / 10), b.GetWorldCenter());
+                    b.ApplyLinearImpulse(new Vector2(-moveForce, 0), b.GetWorldCenter());
+                }
+                else if (ks.IsKeyDown(right))
+                {
+                    b.ApplyLinearImpulse(new Vector2(moveForce, 0), b.GetWorldCenter());
+                }
+
+                if (ks.IsKeyDown(kick))
+                {
+                    headPlayer[playerIndex].playerBody.GotoAndStop(1);
+                    if (pb.CanJump)
+                    {
+                        b.ApplyLinearImpulse(new Vector2(0, -jumpForce / 10), b.GetWorldCenter());
+                    }
+                }
+                else
+                {
+                    headPlayer[playerIndex].playerBody.GotoAndStop(0);
+                }
+
+                if (ks.IsKeyDown(jump))
+                {
+                    if (!pb.isJumpKeyDown && pb.CanJump)
+                    {
+                        b.ApplyLinearImpulse(new Vector2(0, -jumpForce), b.GetWorldCenter());
+                    }
+                    pb.isJumpKeyDown = true;
+                }
+                else
+                {
+                    pb.isJumpKeyDown = false;
                 }
             }
-            else
-            {
-                headPlayer[playerIndex].playerBody.GotoAndStop(0);
-            }
+        }
 
-            if (ks.IsKeyDown(jump))
-            {
-                if (!pb.isJumpKeyDown && pb.CanJump)
-                {
-                    b.ApplyLinearImpulse(new Vector2(0, -jumpForce), b.GetWorldCenter());
-                }
-                pb.isJumpKeyDown = true;
-            }
-            else
-            {
-                pb.isJumpKeyDown = false;
-            }
+        public override void Update(GameTime gameTime)
+        {
+            //HandlePlayerInput(0, Keys.J, Keys.L, Keys.I, Keys.K);
+            HandlePlayerInput(0, Keys.A, Keys.D, Keys.W, Keys.S);
+            HandlePlayerInput(1, Keys.Left, Keys.Right, Keys.Up, Keys.Down);
+            base.Update(gameTime);
+
+            UpdatePlayer(0, gameTime);
+            UpdatePlayer(1, gameTime);
+            CheckTargets();
+            CheckForWin();
         }
     }
 }

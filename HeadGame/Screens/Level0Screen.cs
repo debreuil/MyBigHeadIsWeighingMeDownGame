@@ -40,11 +40,11 @@ namespace HeadGame.Screens
 
         protected override void UpdatePlayer(int playerIndex, GameTime gameTime)
         {
-            if (headPlayer[playerIndex].IsOnTarget)
+            if (headPlayer[playerIndex].TargetContactIndex > -1)
             {
-                headPlayer[playerIndex].AddPoints(gameTime.ElapsedGameTime.Milliseconds);
-
-                int pts = headPlayer[playerIndex].points;
+                headPlayer[playerIndex].Points += gameTime.ElapsedGameTime.Milliseconds;
+                
+                int pts = headPlayer[playerIndex].Points;
                 Game1.Hud.scoreMeter[playerIndex].SetScoreByRatio((float)(pts / (float)maxScore));
             }
         }

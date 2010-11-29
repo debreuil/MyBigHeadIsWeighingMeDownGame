@@ -28,6 +28,8 @@ namespace HeadGame.Screens
         public override void Initialize()
         {
             base.Initialize();
+
+            maxPoints = 3;
             bkgScreenIndex = 1;
         }
         public override void Activate()
@@ -35,5 +37,17 @@ namespace HeadGame.Screens
             base.Activate();
             ClearBoundsBody(EdgeName.Bottom);
         }
+
+        protected override void OnPlayerContact(object player, object objB, Fixture fixtureA, Fixture fixtureB)
+        {
+            base.OnPlayerContact(player, objB, fixtureA, fixtureB);
+            if (!roundOver && objB is Target)
+            {
+                V2DSprite p = (V2DSprite)player;
+                int scoredOnPlayer = p.Parent.Index == 0 ? 1 : 0;
+                AddPoint(scoredOnPlayer);
+            }
+        }
+
     }
 }

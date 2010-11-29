@@ -119,8 +119,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\HeadPlayer.cs" />
+    <Compile Include="Components\Pig.cs" />
     <Compile Include="Components\PlayerFeet.cs" />
     <Compile Include="Components\ScoreMeter.cs" />
+    <Compile Include="Components\SevenSegmentDisplay.cs" />
+    <Compile Include="Components\Target.cs" />
+    <Compile Include="Components\TimedBomb.cs" />
     <Compile Include="Panels\ExitPanel.cs" />
     <Compile Include="Panels\InstructionsPanel.cs" />
     <Compile Include="Panels\MainMenuPanel.cs" />
@@ -133,6 +137,7 @@
     <Compile Include="Screens\Level3Screen.cs" />
     <Compile Include="Screens\Level1Screen.cs" />
     <Compile Include="Screens\Level0Screen.cs" />
+    <Compile Include="Screens\SplashScreen.cs" />
     <Compile Include="Screens\TitleScreen.cs" />
     <Compile Include="Game1.cs" />
   </ItemGroup>
