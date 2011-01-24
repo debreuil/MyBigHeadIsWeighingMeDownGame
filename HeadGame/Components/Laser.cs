@@ -15,21 +15,30 @@ namespace HeadGame.Components
 {
     public class Laser : V2DSprite
     {
-        public Sprite laserPot;
-
-        [SpriteAttribute(depthGroup = 1000)]
+        [SpriteAttribute(depthGroup = 10)]
+        public Sprite laserSource;
+        [SpriteAttribute(depthGroup = 10)]
+        public Sprite laserTarget;
+        [SpriteAttribute(depthGroup = 10)]
         public Sprite laserPoint;
-
+        [SpriteAttribute(depthGroup = 5)]
         LaserParticleEffect laserParticles;
 
-        private float angle = 0;
+        public float maxLaserLength = 70;
+
         private Vector2 point1;
         private Vector2 point2;
         private Vector2 hitPoint = Vector2.Zero;
         private Vector2 hitNormal = Vector2.Zero;
         private bool hitClosest = false;
 
-        BaseScreen levelScreen; 
+        private Vector2 sourceCenter;
+        private Vector2 targetCenter;
+        private Vector2 prevSourcePos;
+        private Vector2 prevTargetPos;
+        private BaseScreen levelScreen; 
+
+
 
         public Laser(Texture2D texture, V2DInstance instance) : base(texture, instance)
         {            
@@ -39,7 +48,8 @@ namespace HeadGame.Components
         {
             base.Activate();
             laserParticles.Begin();
-                    }
+            laserPoint.Play();
+        }
         public override void Deactivate()
         {
             base.Deactivate();
@@ -50,15 +60,30 @@ namespace HeadGame.Components
             base.OnAddToStageComplete();
             levelScreen = (BaseScreen)screen;
 
-            point1 = new Vector2(laserPot.X / V2DScreen.WorldScale, laserPot.Y / V2DScreen.WorldScale);
+            sourceCenter = GetGlobalOffset(laserSource.Position);
+
+            point1 = new Vector2(sourceCenter.X / V2DScreen.WorldScale, sourceCenter.Y / V2DScreen.WorldScale);
 
             laserParticles = (LaserParticleEffect)CreateInstance(
                 "laserParticles",
                 "laserParticles",
-                laserPot.X,
-                laserPot.Y,
+                sourceCenter.X,
+                sourceCenter.Y,
                 0);
         }
+
+        public float Angle
+        {
+            get { return laserSource.Rotation; }
+            set
+            {
+                if (laserTarget == null)
+                {
+                    laserSource.Rotation = value;
+                }
+            }
+        }
+
         public override void RemovedFromStage(EventArgs e)
         {
             base.RemovedFromStage(e);
@@ -69,42 +94,62 @@ namespace HeadGame.Components
         {
             base.Update(gameTime);
 
-            angle += .008f;
-            laserPot.Rotation = angle;
-
-            float len = 70f;
-            Vector2 d = new Vector2(len * (float)Math.Cos(angle), len * (float)Math.Sin(angle));
-            point2 = point1 + d;
-
-            levelScreen.world.RayCast((fixture, point, normal, fraction) =>
+            if (laserTarget == null)
             {
-                Body body = fixture.GetBody();
-                if (body != null && body.GetUserData() is Sprite)
+                float angle = laserSource.Rotation;
+
+                Vector2 d = new Vector2(maxLaserLength * (float)Math.Cos(angle), maxLaserLength * (float)Math.Sin(angle));
+                point2 = point1 + d;
+
+                levelScreen.world.RayCast((fixture, point, normal, fraction) =>
                 {
-                    Sprite sp = (Sprite)body.GetUserData();
-                    if (levelScreen.headPlayer[0].Contains(sp))
+                    Body body = fixture.GetBody();
+                    if (body != null && body.GetUserData() is Sprite)
                     {
-                        levelScreen.headPlayer[0].Electrocute();
+                        Sprite sp = (Sprite)body.GetUserData();
+                        if (levelScreen.headPlayer[0].Contains(sp))
+                        {
+                            levelScreen.headPlayer[0].Electrocute();
+                        }
+                        else if (levelScreen.headPlayer[1].Contains(sp))
+                        {
+                            levelScreen.headPlayer[1].Electrocute();
+                        }
                     }
-                    else if (levelScreen.headPlayer[1].Contains(sp))
-                    {
-                        levelScreen.headPlayer[1].Electrocute();
-                    }
+
+                    hitClosest = true;
+                    hitPoint = point;
+                    hitNormal = normal;
+                    return fraction;
+                }, point1, point2);
+
+                Vector2 endPoint = (hitPoint == Vector2.Zero) ? point2 : hitPoint;
+
+                laserParticles.laserDirection = angle;
+                laserParticles.laserLength = Vector2.Distance(point1, endPoint) * V2DScreen.WorldScale;
+
+                if (laserPoint != null)
+                {
+                    laserPoint.X = endPoint.X * V2DScreen.WorldScale - this.X;
+                    laserPoint.Y = endPoint.Y * V2DScreen.WorldScale - this.Y;
                 }
+            }
+            else
+            {
+                if (laserSource.Position != prevSourcePos || laserTarget.Position != prevTargetPos)
+                {
+                    prevSourcePos = laserSource.Position;
+                    prevTargetPos = laserTarget.Position;
+                    sourceCenter = GetGlobalOffset(laserSource.Position);
+                    targetCenter = GetGlobalOffset(laserTarget.Position);
 
-                hitClosest = true;
-                hitPoint = point;
-                hitNormal = normal;
-                return fraction;
-            }, point1, point2);
-
-            Vector2 endPoint = (hitPoint == Vector2.Zero) ? point2 : hitPoint;
-
-            laserParticles.laserDirection = angle;
-            laserParticles.laserLength = Vector2.Distance(point1, endPoint) * V2DScreen.WorldScale;
-
-            laserPoint.X = endPoint.X * V2DScreen.WorldScale;
-            laserPoint.Y = endPoint.Y * V2DScreen.WorldScale;
+                    laserParticles.laserLength = (targetCenter - sourceCenter).Length();
+                    float angle = (float)Math.Atan2(targetCenter.Y - sourceCenter.Y, targetCenter.X - sourceCenter.X);
+                    laserParticles.laserDirection = angle;
+                    laserSource.Rotation = angle;
+                    laserTarget.Rotation = angle + (float)Math.PI;
+                }
+            }
         }
         public override void Draw(SpriteBatch batch)
         {
