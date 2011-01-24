@@ -12,12 +12,12 @@ using Microsoft.Xna.Framework;
 using V2DRuntime.Attributes;
 
 namespace HeadGame.Components
-{
+{    
     public class HeadPlayer : V2DSprite
     {
         [V2DSpriteAttribute(density = 1.5F, friction = 0.5F)]
         public V2DSprite head;
-
+        
         public V2DSprite neck;
         public V2DSprite playerBody;
 
@@ -25,6 +25,7 @@ namespace HeadGame.Components
         public PlayerFeet feet;
 
         protected int points = 0;
+        private HeadPlayerState headPlayerState;
 
         public HeadPlayer(Texture2D texture, V2DInstance instance) : base(texture, instance)
 		{
@@ -52,6 +53,33 @@ namespace HeadGame.Components
                 points = value;
             }
         }
+        public HeadPlayerState PlayerState 
+        {
+            get { return headPlayerState; }
+            set 
+            {
+                if (headPlayerState != HeadPlayerState.Electrocute)
+                {
+                    headPlayerState = value;
+                }
+            } 
+        }
+
+        public void Electrocute()
+        {
+            headPlayerState = HeadPlayerState.Electrocute;
+            head.PlayheadWrap += new V2DRuntime.Display.AnimationEvent(head_PlayheadWrap);
+            head.Play();
+            playerBody.Play();
+        }
+
+        void head_PlayheadWrap(DisplayObjectContainer sender)
+        {
+            headPlayerState = HeadPlayerState.Normal;
+            head.GotoAndStop(0);
+            playerBody.GotoAndStop(0);
+            this.DestroyAfterUpdate();
+        }
 
         public void MoveTo(float xPos, float yPos)
         {
@@ -76,6 +104,22 @@ namespace HeadGame.Components
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             base.Update(gameTime);
+
+            if (headPlayerState == HeadPlayerState.Normal)
+            {
+                playerBody.GotoAndStop(0);
+            }
+            else if (headPlayerState == HeadPlayerState.Kick)
+            {
+                playerBody.GotoAndStop(1);
+            }
         }
+    }
+
+    public enum HeadPlayerState
+    {
+        Normal,
+        Kick,
+        Electrocute,
     }
 }

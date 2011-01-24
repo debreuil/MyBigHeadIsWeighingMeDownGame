@@ -217,9 +217,10 @@ namespace HeadGame.Screens
                     b.ApplyLinearImpulse(new Vector2(moveForce, 0), b.GetWorldCenter());
                 }
 
+                
                 if (ks.IsKeyDown(kick))
                 {
-                    headPlayer[playerIndex].playerBody.GotoAndStop(1);
+                    headPlayer[playerIndex].PlayerState = HeadPlayerState.Kick;
                     if (pb.CanJump)
                     {
                         b.ApplyLinearImpulse(new Vector2(0, -jumpForce / 10), b.GetWorldCenter());
@@ -227,7 +228,7 @@ namespace HeadGame.Screens
                 }
                 else
                 {
-                    headPlayer[playerIndex].playerBody.GotoAndStop(0);
+                    headPlayer[playerIndex].PlayerState = HeadPlayerState.Normal;
                 }
 
                 if (ks.IsKeyDown(jump))

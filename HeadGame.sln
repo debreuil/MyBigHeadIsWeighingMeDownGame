@@ -4,9 +4,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeadGame", "HeadGame\HeadGa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeadGameContent", "HeadGame\Content\HeadGameContent.contentproj", "{4C31A6F3-87A6-4C12-A50C-58D5CBE6D7D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Box2D.XNA - windows", "..\SWF2XNA\Box2D.XNA\Box2D.XNA - windows.csproj", "{22791486-E721-4511-AA4B-DA26CF5D0F2E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "V2DRuntime", "..\SWF2XNA\V2DRuntime\V2DRuntime.csproj", "{269A1048-DA2C-475A-9C10-564A7D8A071D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Box2D.XNA", "..\SWF2XNA\Box2D.XNA\Box2D.XNA.csproj", "{22791486-E721-4511-AA4B-DA26CF5D0F2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,14 +20,14 @@ Global
 		{921B84C2-910F-4907-9306-590B18FEEC7D}.Release|x86.Build.0 = Release|x86
 		{4C31A6F3-87A6-4C12-A50C-58D5CBE6D7D5}.Debug|x86.ActiveCfg = Debug|x86
 		{4C31A6F3-87A6-4C12-A50C-58D5CBE6D7D5}.Release|x86.ActiveCfg = Release|x86
-		{22791486-E721-4511-AA4B-DA26CF5D0F2E}.Debug|x86.ActiveCfg = Debug|x86
-		{22791486-E721-4511-AA4B-DA26CF5D0F2E}.Debug|x86.Build.0 = Debug|x86
-		{22791486-E721-4511-AA4B-DA26CF5D0F2E}.Release|x86.ActiveCfg = Release|x86
-		{22791486-E721-4511-AA4B-DA26CF5D0F2E}.Release|x86.Build.0 = Release|x86
 		{269A1048-DA2C-475A-9C10-564A7D8A071D}.Debug|x86.ActiveCfg = Debug|x86
 		{269A1048-DA2C-475A-9C10-564A7D8A071D}.Debug|x86.Build.0 = Debug|x86
 		{269A1048-DA2C-475A-9C10-564A7D8A071D}.Release|x86.ActiveCfg = Release|x86
 		{269A1048-DA2C-475A-9C10-564A7D8A071D}.Release|x86.Build.0 = Release|x86
+		{22791486-E721-4511-AA4B-DA26CF5D0F2E}.Debug|x86.ActiveCfg = Debug|x86
+		{22791486-E721-4511-AA4B-DA26CF5D0F2E}.Debug|x86.Build.0 = Debug|x86
+		{22791486-E721-4511-AA4B-DA26CF5D0F2E}.Release|x86.ActiveCfg = Release|x86
+		{22791486-E721-4511-AA4B-DA26CF5D0F2E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

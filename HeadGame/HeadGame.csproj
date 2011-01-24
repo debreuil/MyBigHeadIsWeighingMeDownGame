@@ -119,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\HeadPlayer.cs" />
+    <Compile Include="Components\Laser.cs" />
     <Compile Include="Components\Pig.cs" />
     <Compile Include="Components\PlayerFeet.cs" />
     <Compile Include="Components\ScoreMeter.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="Panels\ExitPanel.cs" />
     <Compile Include="Panels\InstructionsPanel.cs" />
     <Compile Include="Panels\MainMenuPanel.cs" />
+    <Compile Include="Particles\LaserParticleEffect.cs" />
     <Compile Include="Screens\HudScreen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
@@ -197,9 +199,9 @@
     <None Include="Library\gameScreens.fla" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SWF2XNA\Box2D.XNA\Box2D.XNA - windows.csproj">
+    <ProjectReference Include="..\..\SWF2XNA\Box2D.XNA\Box2D.XNA.csproj">
       <Project>{22791486-E721-4511-AA4B-DA26CF5D0F2E}</Project>
-      <Name>Box2D.XNA - windows</Name>
+      <Name>Box2D.XNA</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SWF2XNA\V2DRuntime\V2DRuntime.csproj">
       <Project>{269A1048-DA2C-475A-9C10-564A7D8A071D}</Project>
