@@ -17,7 +17,7 @@ using HeadGame.Particles;
 
 namespace HeadGame.Screens
 {
-    [V2DScreenAttribute(backgroundColor = 0x000000, gravityX = 0, gravityY = 50, debugDraw = false)]
+    [V2DScreenAttribute(backgroundColor = 0x000000, gravityX = 0, gravityY = 50, debugDraw = true)]
     public class Level0Screen : BaseScreen
     {
         [SpriteAttribute(depthGroup = 1000)]

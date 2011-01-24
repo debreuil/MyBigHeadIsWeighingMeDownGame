@@ -47,6 +47,8 @@ namespace HeadGame.Particles
             pulse = (pulse + .01f) % 1;
             flow = (flow > 0) ? flow - .1f : 1;
             jiggleDist = Math.Abs(pulse - .5f) * 20f + 0;
+
+            //pOrigin = GetGlobalOffset(this.Position);
             seed = (int)(r0 * 10001);
 		}
 		protected override void BatchDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch batch)

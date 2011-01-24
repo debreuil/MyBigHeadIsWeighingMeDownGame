@@ -15,12 +15,15 @@ namespace HeadGame.Components
 {
     public class Laser : V2DSprite
     {
-        [SpriteAttribute(depthGroup = 10)]
-        public Sprite laserSource;
-        [SpriteAttribute(depthGroup = 10)]
-        public Sprite laserTarget;
+        [V2DSpriteAttribute(depthGroup = 10, fixedRotation = true)]
+        public V2DSprite laserSource;
+
+        [V2DSpriteAttribute(depthGroup = 10, fixedRotation = true)]
+        public V2DSprite laserTarget;
+
         [SpriteAttribute(depthGroup = 10)]
         public Sprite laserPoint;
+
         [SpriteAttribute(depthGroup = 5)]
         LaserParticleEffect laserParticles;
 
@@ -94,6 +97,10 @@ namespace HeadGame.Components
         {
             base.Update(gameTime);
 
+            sourceCenter = GetGlobalOffset(laserSource.Position);
+            laserParticles.Position = sourceCenter;
+            point1 = new Vector2(sourceCenter.X / V2DScreen.WorldScale, sourceCenter.Y / V2DScreen.WorldScale);
+
             if (laserTarget == null)
             {
                 float angle = laserSource.Rotation;
@@ -140,7 +147,6 @@ namespace HeadGame.Components
                 {
                     prevSourcePos = laserSource.Position;
                     prevTargetPos = laserTarget.Position;
-                    sourceCenter = GetGlobalOffset(laserSource.Position);
                     targetCenter = GetGlobalOffset(laserTarget.Position);
 
                     laserParticles.laserLength = (targetCenter - sourceCenter).Length();

@@ -15,10 +15,8 @@ namespace HeadGame.Screens
     [ScreenAttribute(depthGroup = -10, isPersistantScreen = true)]
     public class HudScreen : V2DScreen
     {
-        public Sprite bkg;
+        public V2DSprite bkg;
 
-        [V2DSpriteAttribute(friction = 0.5f, restitution = 0.5F, isStatic = true)]
-        public V2DSprite roof;
 
         public V2DSprite endPanel;
         public ScoreMeter[] scoreMeter;

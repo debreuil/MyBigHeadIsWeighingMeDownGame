@@ -28,6 +28,9 @@ namespace HeadGame.Screens
 
         //[V2DShaderAttribute(shaderType = typeof(BackgroundShader))]
 
+        [V2DSpriteAttribute(friction = 0.5f, restitution = 0.5F, isStatic = true)]
+        public V2DSprite roof;
+
         [V2DSpriteAttribute(restitution = .8f)]
         public List<HeadPlayer> headPlayer;
 
